@@ -20,7 +20,22 @@ Probando cosas con OpenGL usando MonoGame y .NET Core.
 
 #### Problemas
 * Compilar HLSL esta solo disponible para Windows oficialmente - https://github.com/MonoGame/MonoGame/issues/2167
-  * Posible solucion https://github.com/peon501/Peon501.Pipeline
+  * Posible solucion https://github.com/augustozanellato/MonoGameUniversalEffects
+    * Instalar https://www.virtualbox.org/
+    * Instalar https://www.vagrantup.com/
+    * wget https://github.com/augustozanellato/MonoGameUniversalEffects/releases/download/v1.0.0-beta.1/client.zip
+    * unzip client.zip
+    * rm client.zip
+    * cd client
+    * vagrant up
+    * Abrir MonoGame Content Pipeline project (Content.mgcb)
+    * Click en "Content" 
+    * Click en "References" que es el ultimo item de "Properties"
+    * Click en "Add" y buscar "MonoGameUniversalEffects.Pipeline.dll" que deberia estar en el directorio "Pipeline Extension" dentro de la carpeta client.
+    * Para cada archivo .fx que se quiera compilar cambien "Processor" por "Remote Effects Processor - MonoGameUniversalEffects".
+
+  * Posible solucion solo para Linux https://github.com/peon501/Peon501.Pipeline
+  
 * DLLNotFoundException for nvtt (NVidia Texture Tools) - https://github.com/MonoGame/MonoGame/issues/5866
 
 ### Mac (probado en macOS Mojave)
