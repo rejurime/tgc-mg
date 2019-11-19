@@ -1,10 +1,11 @@
-using System;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using TGC.MG.Viewer.Cameras;
 
-namespace TGC.MG.Viewer.GameModel
+namespace TGC.MG.Viewer.GameModels
 {
     /// <summary>
     /// This is the main type for your game.
@@ -23,23 +24,14 @@ namespace TGC.MG.Viewer.GameModel
 
         private SpriteFont Font { get; set; }
 
-        private Matrix world = Matrix.CreateTranslation(Vector3.Zero);
-        private Matrix view = Matrix.CreateLookAt(new Vector3(0, 400, 400), Vector3.Zero, Vector3.UnitY);
-        private Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 800f / 480f, 1f, 600f);
+        private ICamera Camera { get; set; }
 
-        private Model Model { get; set; }
+        private Renderable RenderObject { get; set; }
 
-        private Vector3 position;
-        private float angle;
-
-        private Effect Effect { get; set; }
-
-        private Model Model2 { get; set; }
-
-        private Model Model3 { get; set; }
-
-        private Vector3 position2;
-
+        //https://github.com/rejurime/tgc-opentk/blob/master/TGC.OpenTK/Game.cs
+        //https://github.com/rejurime/tgc-opentk/tree/master/TGC.OpenTK/Geometries
+        //https://github.com/rejurime/tgc-opentk/tree/master/TGC.OpenTK/Shaders
+        //-------
         /// <summary>
         /// Initializes a new instance of the <see cref="TTGC.MG.Viewer.GameModel.TGCGame"/> class.
         /// The main game constructor is used to initialize the starting variables.
@@ -76,13 +68,18 @@ namespace TGC.MG.Viewer.GameModel
             //TODO: use this.Content to load your game content here
             Font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "Score");
 
-            Model = Content.Load<Model>(ContentFolder3D + "tgcito/tgcito-classic");
-            Model2 = Content.Load<Model>(ContentFolder3D + "bb8/bb8");
-            Model3 = Content.Load<Model>(ContentFolder3D + "teapot");
+            var gameObject = new AGameObject();
+            var model = Content.Load<Model>(ContentFolder3D + "tgcito/tgcito-classic");
+            RenderObject = new Renderable(gameObject, model, GraphicsDevice);
+
+            //Model2 = Content.Load<Model>(ContentFolder3D + "bb8/bb8");
+            //Model3 = Content.Load<Model>(ContentFolder3D + "teapot");
+
+            Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, 60, 1, 200, new Vector3(1, -10, 0), Vector3.Zero);
         }
 
         /// <summary>
-        /// This method is called multiple times per second, and is used to update your game state 
+        /// This method is called multiple times per second, and is used to update your game state
         /// (updating the world, checking for collisions, gathering input, playing audio, etc.).
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
@@ -97,21 +94,22 @@ namespace TGC.MG.Viewer.GameModel
             // TODO: Add your update logic here
             var kstate = Keyboard.GetState();
 
+            /*
             if (kstate.IsKeyDown(Keys.Up))
                 //_ballPosition.Y -= BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (kstate.IsKeyDown(Keys.Down))
-                //_ballPosition.Y += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (kstate.IsKeyDown(Keys.Down))
+                    //_ballPosition.Y += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (kstate.IsKeyDown(Keys.Left))
-                //_ballPosition.X -= BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (kstate.IsKeyDown(Keys.Left))
+                        //_ballPosition.X -= BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (kstate.IsKeyDown(Keys.Right))
-                //_ballPosition.X += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        if (kstate.IsKeyDown(Keys.Right))
+                            //_ballPosition.X += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            */
 
-            position += new Vector3(0, 10f, 0);
-            angle += 0.02f;
-            world = Matrix.CreateRotationY(angle) * Matrix.CreateTranslation(position);
+            RenderObject.GameObject.Coordinates += new Vector3(0, 0.5f, 0);
+            RenderObject.GameObject.Rotation += new Vector3(0, 0.02f, 0);
 
             base.Update(gameTime);
         }
@@ -131,42 +129,9 @@ namespace TGC.MG.Viewer.GameModel
             SpriteBatch.DrawString(Font, "Probando el monito...", Vector2.Zero, Color.White);
             SpriteBatch.End();
 
-            //DrawModel(Model, world, view, projection);
-            //DrawModelWithEffect(model, world, view, projection);
-            //DrawModel(Model2, world, view, projection);
-            DrawModel(Model3, world, view, projection);
+            RenderObject.Draw(GraphicsDevice, Camera);
 
             base.Draw(gameTime);
-        }
-
-        private void DrawModel(Model model, Matrix world, Matrix view, Matrix projection)
-        {
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.World = world;
-                    effect.View = view;
-                    effect.Projection = projection;
-                }
-
-                mesh.Draw();
-            }
-        }
-
-        private void DrawModelWithEffect(Model model, Matrix world, Matrix view, Matrix projection)
-        {
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    part.Effect = Effect;
-                    Effect.Parameters["World"].SetValue(world * mesh.ParentBone.Transform);
-                    Effect.Parameters["View"].SetValue(view);
-                    Effect.Parameters["Projection"].SetValue(projection);
-                }
-                mesh.Draw();
-            }
         }
 
         protected override void UnloadContent()

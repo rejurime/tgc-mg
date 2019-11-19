@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace TGC.MG.Viewer.GameModel
+namespace TGC.MG.Viewer.GameModels
 {
     /// <summary>
     /// Animated sprite will handle the texture atlas, and take care of the drawing for us.
@@ -10,17 +10,21 @@ namespace TGC.MG.Viewer.GameModel
     {
         // Texture stores the texture atlas for our animation.
         public Texture2D Texture { get; set; }
+
         // Rows is the number of rows in the atlas.
         public int Rows { get; set; }
+
         // Columns is the number of columns in the atlas.
         public int Columns { get; set; }
+
         // Frame of the animation we are currently on.
         private int CurrentFrame { get; set; }
+
         // How many frames there are total.
         private int TotalFrames { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:TGCMG.Model.TGCAnimatedSprite"/> class.
+        /// Initializes a new instance of the <see cref="T:TGC.MG.Viewer.GameModel.TGCAnimatedSprite"/> class.
         /// </summary>
         /// <param name="texture">Texture atlas for our animation.</param>
         /// <param name="rows">Rows is the number of rows in the atlas.</param>

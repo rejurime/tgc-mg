@@ -1,13 +1,13 @@
 ﻿using System;
 
-using TGC.MG.Viewer.GameModel;
+using TGC.MG.Viewer.GameModels;
 
 namespace TGC.MG.Viewer
 {
-    class Program
+    internal class Program
     {
-        //[STAThread]
-        static void Main()
+        [STAThread]
+        private static void Main()
         {
             new TGCGame().Run();
         }
