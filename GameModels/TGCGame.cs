@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -33,7 +34,7 @@ namespace TGC.MG.Viewer.GameModels
         //https://github.com/rejurime/tgc-opentk/tree/master/TGC.OpenTK/Shaders
         //-------
         /// <summary>
-        /// Initializes a new instance of the <see cref="TTGC.MG.Viewer.GameModel.TGCGame"/> class.
+        /// Initializes a new instance of the <see cref="TGCGame"/> class.
         /// The main game constructor is used to initialize the starting variables.
         /// </summary>
         public TGCGame()
@@ -75,7 +76,8 @@ namespace TGC.MG.Viewer.GameModels
             //Model2 = Content.Load<Model>(ContentFolder3D + "bb8/bb8");
             //Model3 = Content.Load<Model>(ContentFolder3D + "teapot");
 
-            Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, 60, 1, 200, new Vector3(1, -10, 0), Vector3.Zero);
+            Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, (float)Math.PI / 4, 1, 200, new Vector3(1, -10, 0), Vector3.Zero);
+            //Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, (float)Math.PI / 4, 1, 200, Vector3.Zero, -Vector3.UnitZ)
         }
 
         /// <summary>
