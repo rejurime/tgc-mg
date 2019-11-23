@@ -8,9 +8,9 @@ namespace TGC.MG.Viewer.GameModels
     {
         public Model Model;
         public BasicEffect BasicEffect;
-        public AGameObject GameObject;
+        public GameObject GameObject;
 
-        public Renderable(AGameObject gameObject, Model model, GraphicsDevice graphicsDevice)
+        public Renderable(GameObject gameObject, Model model, GraphicsDevice graphicsDevice)
         {
             GameObject = gameObject;
             Model = model;
@@ -18,8 +18,9 @@ namespace TGC.MG.Viewer.GameModels
             BasicEffect = new BasicEffect(graphicsDevice)
             {
                 AmbientLightColor = Vector3.One,
-                LightingEnabled = true,
                 DiffuseColor = Vector3.One,
+                SpecularColor = Vector3.One,
+                LightingEnabled = true
             };
         }
 
@@ -32,6 +33,7 @@ namespace TGC.MG.Viewer.GameModels
             var s = Matrix.CreateScale(GameObject.Scale);
 
             var world = r1 * r2 * r3 * s * t2;
+
             /*
             BasicEffect.World = r1 * r2 * r3 * s * t2;
             BasicEffect.View = camera.ViewMatrix;

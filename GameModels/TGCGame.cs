@@ -2,8 +2,6 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using TGC.MG.Viewer.Cameras;
 
 namespace TGC.MG.Viewer.GameModels
@@ -28,6 +26,7 @@ namespace TGC.MG.Viewer.GameModels
         private ICamera Camera { get; set; }
 
         private Renderable RenderObject { get; set; }
+        private Renderable RenderObject2 { get; set; }
 
         //https://github.com/rejurime/tgc-opentk/blob/master/TGC.OpenTK/Game.cs
         //https://github.com/rejurime/tgc-opentk/tree/master/TGC.OpenTK/Geometries
@@ -69,15 +68,19 @@ namespace TGC.MG.Viewer.GameModels
             //TODO: use this.Content to load your game content here
             Font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "Score");
 
-            var gameObject = new AGameObject();
+            var gameObject = new GameObject(new Vector3(50,0,50), Vector3.Zero, Vector3.Zero, 0.5f);
             var model = Content.Load<Model>(ContentFolder3D + "tgcito/tgcito-classic");
             RenderObject = new Renderable(gameObject, model, GraphicsDevice);
 
-            //Model2 = Content.Load<Model>(ContentFolder3D + "bb8/bb8");
+            var gameObject2 = new GameObject();
+            var model2 = Content.Load<Model>(ContentFolder3D + "bb8/bb8");
+            RenderObject2 = new Renderable(gameObject2, model2, GraphicsDevice);
+            RenderObject2.GameObject.Scale = 0.25f;
+            RenderObject2.GameObject.Rotation = Vector3.UnitZ;
+
             //Model3 = Content.Load<Model>(ContentFolder3D + "teapot");
 
-            Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, (float)Math.PI / 4, 1, 200, new Vector3(1, -10, 0), Vector3.Zero);
-            //Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, (float)Math.PI / 4, 1, 200, Vector3.Zero, -Vector3.UnitZ)
+            Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, (float)Math.PI / 4, 1, 300, new Vector3(100, 200, 10), Vector3.Zero);
         }
 
         /// <summary>
@@ -123,8 +126,8 @@ namespace TGC.MG.Viewer.GameModels
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            //GraphicsDevice.Clear(Color.CornflowerBlue);
-            Graphics.GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            //Graphics.GraphicsDevice.Clear(Color.Black);
 
             //TODO: Add your drawing code here
             SpriteBatch.Begin();
@@ -132,6 +135,7 @@ namespace TGC.MG.Viewer.GameModels
             SpriteBatch.End();
 
             RenderObject.Draw(GraphicsDevice, Camera);
+            RenderObject2.Draw(GraphicsDevice, Camera);
 
             base.Draw(gameTime);
         }
