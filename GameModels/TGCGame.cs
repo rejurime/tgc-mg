@@ -80,7 +80,7 @@ namespace TGC.MG.Viewer.GameModels
 
             //Model3 = Content.Load<Model>(ContentFolder3D + "teapot");
 
-            Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, (float)Math.PI / 4, 1, 300, new Vector3(100, 200, 10), Vector3.Zero);
+            Camera = new DimanicCamera(GraphicsDevice.Viewport.AspectRatio, (float)Math.PI / 4, 1, 300, new Vector3(100, 200, 10), Vector3.Zero);
         }
 
         /// <summary>
@@ -99,19 +99,39 @@ namespace TGC.MG.Viewer.GameModels
             // TODO: Add your update logic here
             var kstate = Keyboard.GetState();
 
-            /*
+            
             if (kstate.IsKeyDown(Keys.Up))
                 //_ballPosition.Y -= BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                RenderObject2.GameObject.Coordinates -= new Vector3(20 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0, 0);
 
-                if (kstate.IsKeyDown(Keys.Down))
-                    //_ballPosition.Y += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (kstate.IsKeyDown(Keys.Down))
+                //_ballPosition.Y += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                RenderObject2.GameObject.Coordinates += new Vector3(20 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0, 0);
 
-                    if (kstate.IsKeyDown(Keys.Left))
-                        //_ballPosition.X -= BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (kstate.IsKeyDown(Keys.Left))
+                //_ballPosition.X -= BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                RenderObject2.GameObject.Coordinates += new Vector3(0, 0, 20 * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
-                        if (kstate.IsKeyDown(Keys.Right))
-                            //_ballPosition.X += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            */
+            if (kstate.IsKeyDown(Keys.Right))
+                //_ballPosition.X += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                RenderObject2.GameObject.Coordinates -= new Vector3(0, 0, 20 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            if (kstate.IsKeyDown(Keys.A))
+            {
+                //TODO. Revisar, hacemos estas chanchada para poder acceder a los métodos propios de la cámara dinámica
+                var CamaraDinamica = (DimanicCamera)Camera;
+                var mov = 3 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                CamaraDinamica.setPosition(Vector3.Add(CamaraDinamica.getPosition(), new Vector3(mov, mov, mov)));
+            }
+
+            if (kstate.IsKeyDown(Keys.Z))
+            {
+                //TODO. Revisar, hacemos estas chanchada para poder acceder a los métodos propios de la cámara dinámica
+                var CamaraDinamica = (DimanicCamera)Camera;
+                var mov = 3 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                CamaraDinamica.setLookAt(Vector3.Add(CamaraDinamica.getLookAt(), new Vector3(mov, mov, mov)));
+            }
+
 
             RenderObject.GameObject.Coordinates += new Vector3(0, 0.5f, 0);
             RenderObject.GameObject.Rotation += new Vector3(0, 0.02f, 0);
@@ -131,7 +151,7 @@ namespace TGC.MG.Viewer.GameModels
 
             //TODO: Add your drawing code here
             SpriteBatch.Begin();
-            SpriteBatch.DrawString(Font, "Probando el monito...", Vector2.Zero, Color.White);
+            SpriteBatch.DrawString(Font, "Probando el monito...", Vector2.Zero, Color.Red);
             SpriteBatch.End();
 
             RenderObject.Draw(GraphicsDevice, Camera);

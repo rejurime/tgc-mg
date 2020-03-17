@@ -11,12 +11,12 @@ namespace TGC.MG.Viewer.Cameras
         /// <summary>
         /// Posicion de la camara.
         /// </summary>
-        private Vector3 Position { get; }
+        protected Vector3 Position { get; set; }
 
         /// <summary>
         /// Posicion del punto al que mira la camara.
         /// </summary>
-        private Vector3 LookAt { get; }
+        protected Vector3 LookAt { get; set; }
 
         /// <summary>
         /// Vector direccion hacia arriba (puede diferir si la camara se invierte).
@@ -25,10 +25,10 @@ namespace TGC.MG.Viewer.Cameras
 
         public Matrix ProjectionMatrix { get; set; }
 
-        private float FieldOfView { get; }
+        protected float FieldOfView { get; set; }
         private float NearPlane { get; }
         private float FarPlane { get; }
-        public Matrix ViewMatrix { get; }
+        public Matrix ViewMatrix { get; set; }
 
         /// Configura la posicion de la camara, hacia donde apunta y cual es el vector arriba.
         /// </summary>
@@ -53,6 +53,11 @@ namespace TGC.MG.Viewer.Cameras
         /// <param name="aspectRatio">Ancho dividido por la altura</param>
         /// <summary>
         public StaticCamera(float aspectRatio, float fieldOfViewDegrees, float nearPlane, float farPlane, Vector3 position, Vector3 lookAt) : this(aspectRatio, fieldOfViewDegrees, nearPlane, farPlane, position, lookAt, Vector3.UnitY)
+        {
+        }
+
+        //TODO Revisar, me obliga a crear este método sino la clase DimanicCamera no compila en su constructor.
+        public StaticCamera()
         {
         }
 
