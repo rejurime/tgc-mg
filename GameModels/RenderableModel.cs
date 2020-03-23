@@ -4,13 +4,18 @@ using TGC.MG.Viewer.Cameras;
 
 namespace TGC.MG.Viewer.GameModels
 {
-    public class Renderable
+    public class RenderableModel
     {
         public Model Model;
         public BasicEffect BasicEffect;
         public GameObject GameObject;
 
-        public Renderable(GameObject gameObject, Model model, GraphicsDevice graphicsDevice)
+        public RenderableModel(Model model, GraphicsDevice graphicsDevice) : this(new GameObject(), model, graphicsDevice)
+        {
+
+        }
+
+        public RenderableModel(GameObject gameObject, Model model, GraphicsDevice graphicsDevice)
         {
             GameObject = gameObject;
             Model = model;

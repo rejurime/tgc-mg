@@ -4,12 +4,13 @@ using TGC.MG.Viewer.GameModels;
 
 namespace TGC.MG.Viewer
 {
-    internal class Program
+    public static class Program
     {
         [STAThread]
-        private static void Main()
+        static void Main()
         {
-            new TGCGame().Run();
+            using (var game = new TGCGame())
+                game.Run();
         }
     }
 }

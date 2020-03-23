@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MG.Viewer.Cameras;
+using TGC.MG.Viewer.Geometries;
 
 namespace TGC.MG.Viewer.GameModels
 {
@@ -25,23 +26,22 @@ namespace TGC.MG.Viewer.GameModels
 
         private ICamera Camera { get; set; }
 
-        private Renderable RenderObject { get; set; }
-        private Renderable RenderObject2 { get; set; }
+        private RenderableModel RenderObject { get; set; }
+        private RenderableModel RenderObject2 { get; set; }
+        private RenderableModel RenderObject3 { get; set; }
+        private TGCTriangle Triangle { get; set; }
+        private TGCTriangle Triangle2 { get; set; }
 
-        //https://github.com/rejurime/tgc-opentk/blob/master/TGC.OpenTK/Game.cs
-        //https://github.com/rejurime/tgc-opentk/tree/master/TGC.OpenTK/Geometries
-        //https://github.com/rejurime/tgc-opentk/tree/master/TGC.OpenTK/Shaders
-        //-------
         /// <summary>
         /// Initializes a new instance of the <see cref="TGCGame"/> class.
         /// The main game constructor is used to initialize the starting variables.
         /// </summary>
         public TGCGame()
         {
-            Graphics = new GraphicsDeviceManager(this);
+            this.Graphics = new GraphicsDeviceManager(this);
             //Graphics.IsFullScreen = true;
-            Content.RootDirectory = ContentFolder;
-            IsMouseVisible = true;
+            this.Content.RootDirectory = ContentFolder;
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -63,24 +63,29 @@ namespace TGC.MG.Viewer.GameModels
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             //TODO: use this.Content to load your game content here
-            Font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "Score");
+            this.Font = this.Content.Load<SpriteFont>(ContentFolderSpriteFonts + "Score");
 
-            var gameObject = new GameObject(new Vector3(50,0,50), Vector3.Zero, Vector3.Zero, 0.5f);
-            var model = Content.Load<Model>(ContentFolder3D + "tgcito/tgcito-classic");
-            RenderObject = new Renderable(gameObject, model, GraphicsDevice);
+            var gameObject = new GameObject(new Vector3(50, 0, 50), Vector3.Zero, Vector3.Zero, 0.5f);
+            var model = this.Content.Load<Model>(ContentFolder3D + "tgcito/tgcito-classic");
+            this.RenderObject = new RenderableModel(gameObject, model, this.GraphicsDevice);
 
-            var gameObject2 = new GameObject();
-            var model2 = Content.Load<Model>(ContentFolder3D + "bb8/bb8");
-            RenderObject2 = new Renderable(gameObject2, model2, GraphicsDevice);
-            RenderObject2.GameObject.Scale = 0.25f;
-            RenderObject2.GameObject.Rotation = Vector3.UnitZ;
+            var model2 = this.Content.Load<Model>(ContentFolder3D + "bb8/bb8");
+            this.RenderObject2 = new RenderableModel(model2, this.GraphicsDevice);
+            this.RenderObject2.GameObject.Scale = 0.25f;
+            this.RenderObject2.GameObject.Coordinates = new Vector3(-20, 20, 40);
+            this.RenderObject2.GameObject.Rotation = Vector3.UnitZ;
 
-            //Model3 = Content.Load<Model>(ContentFolder3D + "teapot");
+            var gameObject3 = new GameObject(new Vector3(-50, 0, -50), new Vector3(0, MathHelper.PiOver2, 0), Vector3.Zero, 10);
+            var model3 = this.Content.Load<Model>(ContentFolder3D + "teapot");
+            this.RenderObject3 = new RenderableModel(gameObject3, model3, this.GraphicsDevice);
 
-            Camera = new StaticCamera(GraphicsDevice.Viewport.AspectRatio, (float)Math.PI / 4, 1, 300, new Vector3(100, 200, 10), Vector3.Zero);
+            this.Triangle = new TGCTriangle(this.GraphicsDevice, new Vector3(-40f, -40f, 40f), new Vector3(40f, 40f, 40f), new Vector3(0f, 40f, 40f), Color.DarkBlue);
+            this.Triangle2 = new TGCTriangle(this.GraphicsDevice, new Vector3(-30f, -30f, 30f), Color.Blue, new Vector3(30f, 30f, 30f), Color.Red, new Vector3(0f, 30f, 30f), Color.Green);
+
+            this.Camera = new StaticCamera(this.GraphicsDevice.Viewport.AspectRatio, MathHelper.PiOver4, 1, 300, new Vector3(100, 200, 10), Vector3.Zero);
         }
 
         /// <summary>
@@ -90,31 +95,27 @@ namespace TGC.MG.Viewer.GameModels
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                Exit();
-            }
-
             // TODO: Add your update logic here
             var kstate = Keyboard.GetState();
 
-            /*
+            if (kstate.IsKeyDown(Keys.Escape))
+                this.Exit();
+
             if (kstate.IsKeyDown(Keys.Up))
-                //_ballPosition.Y -= BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this.RenderObject.GameObject.Coordinates -= new Vector3(25, 0, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            // Vale la pena agregar Speed a GameObject? ObjectSpeed
 
-                if (kstate.IsKeyDown(Keys.Down))
-                    //_ballPosition.Y += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (kstate.IsKeyDown(Keys.Down))
+                this.RenderObject.GameObject.Coordinates += new Vector3(25, 0, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                    if (kstate.IsKeyDown(Keys.Left))
-                        //_ballPosition.X -= BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (kstate.IsKeyDown(Keys.Space))
+                this.RenderObject.GameObject.Coordinates += new Vector3(0, 10, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                        if (kstate.IsKeyDown(Keys.Right))
-                            //_ballPosition.X += BallSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            */
+            if (kstate.IsKeyDown(Keys.Left))
+                this.RenderObject.GameObject.Rotation += Vector3.Up * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            RenderObject.GameObject.Coordinates += new Vector3(0, 0.5f, 0);
-            RenderObject.GameObject.Rotation += new Vector3(0, 0.02f, 0);
+            if (kstate.IsKeyDown(Keys.Right))
+                this.RenderObject.GameObject.Rotation -= Vector3.Up * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             base.Update(gameTime);
         }
@@ -126,23 +127,27 @@ namespace TGC.MG.Viewer.GameModels
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            this.GraphicsDevice.Clear(Color.CornflowerBlue);
             //Graphics.GraphicsDevice.Clear(Color.Black);
 
             //TODO: Add your drawing code here
-            SpriteBatch.Begin();
-            SpriteBatch.DrawString(Font, "Probando el monito...", Vector2.Zero, Color.White);
-            SpriteBatch.End();
+            this.SpriteBatch.Begin();
+            this.SpriteBatch.DrawString(this.Font, "Probando el monito...", Vector2.Zero, Color.White);
+            this.SpriteBatch.End();
 
-            RenderObject.Draw(GraphicsDevice, Camera);
-            RenderObject2.Draw(GraphicsDevice, Camera);
+            this.RenderObject.Draw(this.GraphicsDevice, this.Camera);
+            this.RenderObject2.Draw(this.GraphicsDevice, this.Camera);
+            this.RenderObject3.Draw(this.GraphicsDevice, this.Camera);
+
+            this.Triangle.Draw(this.GraphicsDevice, this.Camera);
+            this.Triangle2.Draw(this.GraphicsDevice, this.Camera);
 
             base.Draw(gameTime);
         }
 
         protected override void UnloadContent()
         {
-            Content.Unload();
+            this.Content.Unload();
         }
     }
 }
